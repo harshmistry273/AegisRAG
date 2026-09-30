@@ -1,0 +1,114 @@
+[
+  {
+    "id": "AegisRAG_Architecture_Doc.md_0_6d77d0",
+    "content": "# AegisRAG System Architecture & Design AegisRAG is a production-grade Corrective Retrieval-Augmented Generation (CRAG) system engineered to overcome the limitations of Naive RAG. Traditional Naive RAG relies strictly on dense vector similarity (Bi-Encoder embeddings), which suffers from three fundamental flaws: 1. Lost in the Middle: Long context windows dilute critical information located in intermediate positions. 2. Semantic Drift: Dense embeddings fail on exact keyword lookups, acronyms, and alphanumeric entity identifiers.",
+    "metadata": {
+      "source": "AegisRAG_Architecture_Doc.md",
+      "file_type": "text",
+      "chunk_index": 0,
+      "total_chunks": 4,
+      "char_length": 534,
+      "estimated_tokens": 93
+    },
+    "score": 0.0,
+    "source": "AegisRAG_Architecture_Doc.md"
+  },
+  {
+    "id": "AegisRAG_Architecture_Doc.md_1_061ce6",
+    "content": "2. Semantic Drift: Dense embeddings fail on exact keyword lookups, acronyms, and alphanumeric entity identifiers. 3. Blind Context Injection: Naive RAG unconditionally feeds retrieved documents to the LLM even if they are irrelevant, resulting in hallucinated responses. AegisRAG resolves these limitations through a multi-stage cyclic architecture: First, Query Transformation utilizes Multi-Query Expansion and Hypothetical Document Embeddings (HyDE) to reformulate user intent.",
+    "metadata": {
+      "source": "AegisRAG_Architecture_Doc.md",
+      "file_type": "text",
+      "chunk_index": 1,
+      "total_chunks": 4,
+      "char_length": 480,
+      "estimated_tokens": 81
+    },
+    "score": 0.0,
+    "source": "AegisRAG_Architecture_Doc.md"
+  },
+  {
+    "id": "AegisRAG_Architecture_Doc.md_2_6d0941",
+    "content": "First, Query Transformation utilizes Multi-Query Expansion and Hypothetical Document Embeddings (HyDE) to reformulate user intent. Second, Hybrid Retrieval executes parallel Dense Cosine Search and Sparse Okapi BM25 keyword search, fused via Reciprocal Rank Fusion (RRF) with constant k=60. Third, a Neural Contextual Reranker re-orders candidates via cross-attention scoring. Fourth, an automated Document Relevance Grader evaluates retrieved excerpts. If relevance is insufficient, the system triggers automated query rewriting or external Web Search Fallback.",
+    "metadata": {
+      "source": "AegisRAG_Architecture_Doc.md",
+      "file_type": "text",
+      "chunk_index": 2,
+      "total_chunks": 4,
+      "char_length": 562,
+      "estimated_tokens": 96
+    },
+    "score": 0.0,
+    "source": "AegisRAG_Architecture_Doc.md"
+  },
+  {
+    "id": "AegisRAG_Architecture_Doc.md_3_584f84",
+    "content": "Fourth, an automated Document Relevance Grader evaluates retrieved excerpts. If relevance is insufficient, the system triggers automated query rewriting or external Web Search Fallback. Finally, generation is executed using Groq's high-throughput LPU Inference Engine, followed by a Self-Reflective Faithfulness and Hallucination Guardrail.",
+    "metadata": {
+      "source": "AegisRAG_Architecture_Doc.md",
+      "file_type": "text",
+      "chunk_index": 3,
+      "total_chunks": 4,
+      "char_length": 340,
+      "estimated_tokens": 56
+    },
+    "score": 0.0,
+    "source": "AegisRAG_Architecture_Doc.md"
+  },
+  {
+    "id": "Groq_LPU_Inference_Specifications.md_0_f30f29",
+    "content": "# Groq Language Processing Unit (LPU) Specifications The Groq LPU is a purpose-built Tensor Streaming Processor designed specifically for sequential deep learning inference. Unlike conventional GPUs (e.g., NVIDIA H100) which utilize dynamic thread scheduling and high-bandwidth memory (HBM) architectures that incur memory-bandwidth bottlenecks, Groq employs a Deterministic Tensor Architecture: 1. Static Compiler Scheduling: Execution schedules and data movement are computed statically at compile-time, eliminating runtime execution jitter.",
+    "metadata": {
+      "source": "Groq_LPU_Inference_Specifications.md",
+      "file_type": "text",
+      "chunk_index": 0,
+      "total_chunks": 2,
+      "char_length": 543,
+      "estimated_tokens": 89
+    },
+    "score": 0.0,
+    "source": "Groq_LPU_Inference_Specifications.md"
+  },
+  {
+    "id": "Groq_LPU_Inference_Specifications.md_1_d0605b",
+    "content": "1. Static Compiler Scheduling: Execution schedules and data movement are computed statically at compile-time, eliminating runtime execution jitter. 2. Ultra-Low Time-to-First-Token (TTFT): Groq achieves TTFT under 200 milliseconds and sustained throughput exceeding 300 tokens per second on large open models. 3. Deterministic Latency: Linear scaling with predictable SLA guarantees, making Groq optimal for multi-step agentic loops where cumulative multi-call latency would otherwise degrade user experience.",
+    "metadata": {
+      "source": "Groq_LPU_Inference_Specifications.md",
+      "file_type": "text",
+      "chunk_index": 1,
+      "total_chunks": 2,
+      "char_length": 509,
+      "estimated_tokens": 86
+    },
+    "score": 0.0,
+    "source": "Groq_LPU_Inference_Specifications.md"
+  },
+  {
+    "id": "Information_Retrieval_Mathematics.md_0_e31ec0",
+    "content": "# Mathematical Foundations of Hybrid Retrieval\n1. Okapi BM25 Lexical Ranking:\nGiven a query Q with terms q_1, ..., q_n and document D, the BM25 score is defined as:\nScore(D, Q) = sum_{i=1}^{n} IDF(q_i) * (f(q_i, D) * (k1 + 1)) / (f(q_i, D) + k1 * (1 - b + b * (|D| / avgdl)))\nWhere:\n- f(q_i, D) is the term frequency of q_i in D.\n- |D| is document length and avgdl is average document length across the corpus.\n- k1 = 1.5 regulates term frequency saturation.\n- b = 0.75 regulates document length normalization.",
+    "metadata": {
+      "source": "Information_Retrieval_Mathematics.md",
+      "file_type": "text",
+      "chunk_index": 0,
+      "total_chunks": 2,
+      "char_length": 510,
+      "estimated_tokens": 130
+    },
+    "score": 0.0,
+    "source": "Information_Retrieval_Mathematics.md"
+  },
+  {
+    "id": "Information_Retrieval_Mathematics.md_1_9b3731",
+    "content": "# Mathematical Foundations of Hybrid Retrieval\n1. Okapi BM25 Lexical Ranking:\nGiven a query Q with terms q_1, ..., q_n and document D, the BM25 score is defined as:\nScore(D, Q) = sum_{i=1}^{n} IDF(q_i) * (f(q_i, D) * (k1 + 1)) / (f(q_i, D) + k1 * (1 - b + b * (|D| / avgdl)))\nWhere:\n- f(q_i, D) is the term frequency of q_i in D.\n- |D| is document length and avgdl is average document length across the corpus.\n- k1 = 1.5 regulates term frequency saturation.\n- b = 0.75 regulates document length normalization. 2. Reciprocal Rank Fusion (RRF):\nTo fuse rankings from disparate scoring domains (BM25 in [0, inf) and Cosine Similarity in [-1, 1]) without calibration bias, RRF scores each document d across retrieval methods M as:\nRRF_Score(d) = sum_{m in M} 1 / (k + rank_m(d))\nWhere k = 60 is the smoothing constant that prevents high-ranking outliers from dominating the fused distribution.",
+    "metadata": {
+      "source": "Information_Retrieval_Mathematics.md",
+      "file_type": "text",
+      "chunk_index": 1,
+      "total_chunks": 2,
+      "char_length": 890,
+      "estimated_tokens": 213
+    },
+    "score": 0.0,
+    "source": "Information_Retrieval_Mathematics.md"
+  }
+]

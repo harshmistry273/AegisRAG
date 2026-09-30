@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # Streamlit Interactive Web Application
+  aegis-streamlit:
+    build: .
+    container_name: aegis_rag_streamlit
+    command: ["python", "run_app.py", "--mode", "streamlit"]
+    ports:
+      - "8501:8501"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GROQ_MODEL=${GROQ_MODEL:-qwen/qwen3.8-27b}
+      - ENVIRONMENT=production
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+  # FastAPI REST Microservice
+  aegis-api:
+    build: .
+    container_name: aegis_rag_api
+    command: ["python", "run_app.py", "--mode", "api"]
+    ports:
+      - "8000:8000"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GROQ_MODEL=${GROQ_MODEL:-qwen/qwen3.8-27b}
+      - HOST=0.0.0.0
+      - PORT=8000
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
